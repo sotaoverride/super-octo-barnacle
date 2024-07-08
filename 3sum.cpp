@@ -12,7 +12,7 @@ class Solution {
 			bool foundUnique = false;
 			long unsigned int size=nums.size();
 
-			for (int i=0; i<size; i++){
+			for (size_t i=0; i<size; i++){
 				while(tail>=(int *)&nums[0]){
 					while (head<&nums[0]+nums.size()){
 						if((int *)&nums[i]!=tail && (int*)&nums[i]!=head && head!=tail){
@@ -24,7 +24,7 @@ class Solution {
 								vector<int> triplet4({*head,*tail,nums[i]});
 								vector<int> triplet5({*head,nums[i],*tail});
 								foundUnique=true;
-								for(int j=0;j<found.size();j++){
+								for(size_t j=0;j<found.size();j++){
 
 
 									if(found[j]==triplet ||
@@ -36,8 +36,10 @@ class Solution {
 									  ) foundUnique=false;
 
 								}
-								if(foundUnique)
+								if(foundUnique){
+									printf("found some");
 									found.push_back(triplet);
+								}
 							}
 						}
 						head+=sizeof(int);
@@ -58,9 +60,9 @@ int main(){
 
 	vector<vector <int>> result=sol.threeSum(tmp);
 	printf("%s ", "[");
-	for (int i=0;i<result.size();i++) {
+	for (size_t i=0;i<result.size();i++) {
 		printf("%s", "[");
-		for (int j=0;j<result[i].size();j++) {
+		for (size_t j=0;j<result[i].size();j++) {
 			printf("%d,", result[i][j]);
 		}
 		printf("%s", "]");
