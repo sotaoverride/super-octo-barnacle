@@ -43,7 +43,7 @@ class Solution {
 						head+=sizeof(int);
 						//tail-=sizeof(int);
 					}
-					tail = (int *)&nums[0]+nums.size()-1;
+					tail-=sizeof(int);
 
 				}
 				tail = (int *)&nums[0]+nums.size()-1;
@@ -56,7 +56,15 @@ int main(){
 	Solution sol;
 	vector<int> tmp({-1,0,1,2,-1,-4});
 
-	sol.threeSum(tmp);
+	vector<vector <int>> result=sol.threeSum(tmp);
+	printf("%s ", "[");
+	for (int i=0;i<result.size();i++) {
+		printf("%s", "[");
+		for (int j=0;j<result[i].size();j++) {
+			printf("%d,", result[i][j]);
+		}
+		printf("%s", "]");
+	}
 	return 0;
 
 
