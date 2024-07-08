@@ -14,9 +14,11 @@ class Solution {
 
 			for (size_t i=0; i<size; i++){
 				while(tail>=(int *)&nums[0]){
+					head=(int *)&nums[0];
+
 					while (head<&nums[0]+nums.size()){
 						if((int *)&nums[i]!=tail && (int*)&nums[i]!=head && head!=tail){
-							if (nums[i]+(int)*tail+(int)*head==0){
+							if (nums[i]+*tail+*head==0){
 								vector<int> triplet({nums[i],*head,*tail});
 								vector<int> triplet1({nums[i],*tail,*head});
 								vector<int> triplet2({*tail,nums[i],*head});
@@ -42,10 +44,10 @@ class Solution {
 								}
 							}
 						}
-						head+=sizeof(int);
+						head=head+1;
 						//tail-=sizeof(int);
 					}
-					tail-=sizeof(int);
+					tail-=1;
 
 				}
 				tail = (int *)&nums[0]+nums.size()-1;
