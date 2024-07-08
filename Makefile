@@ -1,2 +1,2 @@
 main: 3sum.cpp
-	     gcc -o main 3sum.cpp -I. -Wall -Wextra -g
+	     g++ -o main 3sum.cpp -I. -lstdc++ -Wall -Wextra -g
