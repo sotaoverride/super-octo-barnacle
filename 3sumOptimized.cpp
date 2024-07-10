@@ -17,14 +17,20 @@ class Solution {
 			for (size_t i = 0; i < nums.size(); i++) {
 				arr[nums[i]+LARGEST]++;
 			}
-			while (tail > (int*)&nums[0]) {
+			while (tail >= (int*)&nums[0]) {
 				head = (int*)&nums[0];
 				while (head < &nums[0] + nums.size()) {
 					int k = *head + *tail;
 					thirdVal=k*-1;
-					arr[*head+LARGEST]--;
-					arr[*tail+LARGEST]--;
-					if(arr[thirdVal+LARGEST] > 0 && arr) {
+					if(arr[*head+LARGEST]>=2)
+						arr[*head+LARGEST]--;
+					if(arr[*tail+LARGEST]>=2)
+						arr[*tail+LARGEST]--;
+					if(arr[thirdVal+LARGEST]>=2) 
+						arr[thirdVal+LARGEST]--;
+					if(arr[*head+LARGEST] == 1 && arr[*tail+LARGEST]== 1 && arr[thirdVal+LARGEST]== 1)
+					{
+
 						vector<int> triplet({thirdVal, *head, *tail});
 						vector<int> triplet1({thirdVal, *tail, *head});
 						vector<int> triplet2({*tail, thirdVal, *head});
@@ -43,12 +49,9 @@ class Solution {
 								break;
 							}
 						}
-						if (foundUnique){
+						if(foundUnique)
 							found.push_back(triplet);
-						}
 					}
-					arr[*head+LARGEST]++;
-					arr[*tail+LARGEST]++;
 
 					head = head + 1;
 				}
