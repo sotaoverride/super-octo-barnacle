@@ -1,64 +1,97 @@
-#include <iostream>
-#include <vector>
-using namespace std;
 class Solution {
-	public:
-#define LARGEST 100000
-#define SMALLEST -100000
-#define length (100000 * 2)
-		vector<vector<int>> threeSum(vector<int>& nums) {
-			vector<vector<int>> found;
-			int* head = (int*)&nums[0];
-			int* tail = (int*)&nums[0] + nums.size() - 1;
-			bool foundUnique = false;
-			//long unsigned int size=nums.size();
-			int arr[length]={0};
-			int thirdVal = 0;
-			for (size_t i = 0; i < nums.size(); i++) {
-				arr[nums[i]+LARGEST]++;
-			}
-			while (tail >= (int*)&nums[0]) {
-				head = (int*)&nums[0];
-				while (head < &nums[0] + nums.size()) {
-					int k = *head + *tail;
-					thirdVal=k*-1;
-					if(arr[*head+LARGEST]>=2)
-						arr[*head+LARGEST]--;
-					if(arr[*tail+LARGEST]>=2)
-						arr[*tail+LARGEST]--;
-					if(arr[thirdVal+LARGEST]>=2) 
-						arr[thirdVal+LARGEST]--;
-					if(arr[*head+LARGEST] == 1 && arr[*tail+LARGEST]== 1 && arr[thirdVal+LARGEST]== 1)
-					{
+public:
+    #define LARGEST 100000
+    #define SMALLEST -100000
+    #define length (100000 * 4)
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> found;
+        int* head = (int*)&nums[0];
+        int* tail = (int*)&nums[0] + nums.size() - 1;
+        bool foundUnique = false;
+        int arr[length]={0};
+        int thirdVal = 0;
+        vector<int> triplet;
+        for (size_t i = 0; i < nums.size(); i++) {
+            arr[nums[i]+LARGEST]++;
+        }
+            while (tail > &nums[0]) {
+                head = (int*)&nums[0];
+                while (head < &nums[nums.size()]) {
+                    triplet={};
+                    int k = *head + *tail;
+                    thirdVal=k*-1;
+                    arr[*head+LARGEST]--;
+                    arr[*tail+LARGEST]--;
+                    if(arr[thirdVal+LARGEST] > 0  && head != tail){
+                        if(thirdVal <= *head && thirdVal <= *tail && *head <= *tail){
+                            triplet={thirdVal, *head, *tail};
+                            goto add;
 
-						vector<int> triplet({thirdVal, *head, *tail});
-						vector<int> triplet1({thirdVal, *tail, *head});
-						vector<int> triplet2({*tail, thirdVal, *head});
-						vector<int> triplet3({*tail, *head, thirdVal});
-						vector<int> triplet4({*head, *tail, thirdVal});
-						vector<int> triplet5({*head, thirdVal, *tail});
-						foundUnique = true;
-						for (int j = 0; j < found.size(); j++) {
-							if (found[j] == triplet ||
-									found[j] == triplet1 ||
-									found[j] == triplet2 ||
-									found[j] == triplet3 ||
-									found[j] == triplet4 ||
-									found[j] == triplet5) {
-								foundUnique = false;
-								break;
-							}
-						}
-						if(foundUnique)
-							found.push_back(triplet);
-					}
+                        }
+                        else if(thirdVal <= *head && thirdVal <= *tail && *tail <= *head){
+                            triplet={thirdVal,*tail,*head};
+                            goto add;
+                        } 
+                        else if( (*head <= thirdVal && *head <= *tail) && thirdVal <= *tail){
+                            triplet={*head,thirdVal,*tail};
+                            goto add;
 
-					head = head + 1;
-				}
-				tail -= 1;
-			}
-			return found;
-		}
+                        }
+                        else if(*head <=thirdVal && *head <= *tail && *tail <= thirdVal){
+                            triplet={*head,*tail,thirdVal};
+                            goto add;
+                        }
+                        else if (*tail <= thirdVal && *tail <= *head && *head <= thirdVal){
+                            triplet={*tail,*head,thirdVal};
+                            goto add;
+                        }
+                        else if (*tail <=thirdVal && *tail <= *head && thirdVal <= * head){
+                            triplet={*tail, thirdVal, *head};
+                            goto add;
+                        }
+                        else triplet={500,500,500};
+                        add:
+                        foundUnique=true;
+                        if (found.size() > 0){ 
+                            int firstArr[found.size()];
+                            int secondArr[found.size()];
+                            int thirdArr[found.size()];
+                            for (int j=0;j<found.size();j++){
+                                firstArr[j]=found[j][0];
+                                secondArr[j]=found[j][1];
+                                thirdArr[j]=found[j][2];
+                            }
+                            for (int j=0;j<found.size();j++){
+                                if(firstArr[j]==triplet[0] &&
+                                secondArr[j]==triplet[1] &&
+                                thirdArr[j]==triplet[2]){
+                                    foundUnique=false;
+                                    arr[*head+LARGEST]++;
+                                    arr[*tail+LARGEST]++;
+                                    //arr[thirdVal+LARGEST]++
+                                    break;
+                                }
+                            }
+                        }
+                        //foundUnique = true;
+                        if (foundUnique){
+                            found.push_back(triplet);
+                            arr[*head+LARGEST]++;
+                            arr[*tail+LARGEST]++;
+                            //break;
+                        }
+                    }
+                    else{  
+                    arr[*head+LARGEST]++;
+                    arr[*tail+LARGEST]++;
+                    }      
+                    head = head + 1;
+                }
+                tail -= 1;
+            }
+            if (found.size() == 0) return found;
+        return found;
+    }
 };
 int main(){
 	Solution sol;
