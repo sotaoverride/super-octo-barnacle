@@ -7,15 +7,20 @@ public:
 #define SMALLEST -100000
 #define length (100000 * 2 + 1)
     vector<vector<int>> threeSum(vector<int>& nums) {
+        struct marker {
+            int val;
+            bool used;
+        };
         vector<vector<int>> found;
         int* head = (int*)&nums[0];
         int* tail = (int*)&nums[0] + nums.size() - 1;
         bool foundUnique = false;
-        int arr[length] = {0};
+        marker arr[length] = {0};
         int thirdVal = 0;
+        int counter = 0;
         vector<int> triplet;
         for (size_t i = 0; i < nums.size(); i++) {
-            arr[nums[i] + LARGEST]++;
+            arr[nums[i] + LARGEST].val++;
         }
         while (tail >= &nums[0]) {
             head = (int*)&nums[0];
@@ -23,15 +28,14 @@ public:
                 triplet = {};
                 int k = *head + *tail;
                 thirdVal = k * -1;
-                arr[*head + LARGEST]--;
-                arr[*tail + LARGEST]--;
+                arr[*head + LARGEST].val--;
+                arr[*tail + LARGEST].val--;
                 if (thirdVal >= -100000 && thirdVal <= 100000) {
-                    if (arr[thirdVal + LARGEST] > 0 && head != tail) {
+                    if (arr[thirdVal + LARGEST].val > 0 && head != tail) {
                         if (thirdVal <= *head && thirdVal <= *tail &&
                             *head <= *tail) {
                             triplet = {thirdVal, *head, *tail};
                             goto add;
-
                         } else if (thirdVal <= *head && thirdVal <= *tail &&
                                    *tail <= *head) {
                             triplet = {thirdVal, *tail, *head};
@@ -40,7 +44,6 @@ public:
                                    thirdVal <= *tail) {
                             triplet = {*head, thirdVal, *tail};
                             goto add;
-
                         } else if (*head <= thirdVal && *head <= *tail &&
                                    *tail <= thirdVal) {
                             triplet = {*head, *tail, thirdVal};
@@ -58,25 +61,29 @@ public:
                     add:
                         foundUnique = true;
                         if (found.size() > 0) {
-                            for (int j = 0; j < found.size(); j++) {
-                                if (found[j][0] == triplet[0] &&
-                                    found[j][1] == triplet[1] &&
-                                    found[j][2] == triplet[2]) {
-                                    foundUnique = false;
-                                    break;
-                                }
+                            if (arr[*tail + LARGEST].used ==
+                                arr[*head + LARGEST].used ==
+                                arr[thirdVal + LARGEST].used == true) {
+                                foundUnique = false;
+
+                                break;
                             }
                         }
+
                         if (foundUnique) {
+                            arr[*tail + LARGEST].used = true;
+                            arr[*head + LARGEST].used = true;
+                            arr[thirdVal + LARGEST].used = true;
                             found.push_back(triplet);
                         }
                     }
                 }
-                arr[*head+LARGEST]++;
-                arr[*tail+LARGEST]++;
+                arr[*head + LARGEST].val++;
+                arr[*tail + LARGEST].val++;
                 head = head + 1;
             }
             tail -= 1;
+            counter += found.size();
         }
         if (found.size() == 0)
             return found;
