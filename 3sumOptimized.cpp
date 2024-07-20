@@ -7,6 +7,9 @@ public:
 #define SMALLEST -100000
 #define length (100000 * 2 + 1)
     vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<int> lastFound({100001, 100001, 100001});
+        int lastThirdVal = 100001;
+        int* lastHead = NULL;
         struct marker {
             int val;
             bool used;
@@ -16,11 +19,13 @@ public:
         int* tail = (int*)&nums[0] + nums.size() - 1;
         bool foundUnique = false;
         marker arr[length] = {0};
+        marker arr2[length] = {0};
         int thirdVal = 0;
         int counter = 0;
         vector<int> triplet;
         for (size_t i = 0; i < nums.size(); i++) {
             arr[nums[i] + LARGEST].val++;
+            arr2[nums[i] + LARGEST].val++;
         }
         while (tail >= &nums[0]) {
             head = (int*)&nums[0];
@@ -28,62 +33,38 @@ public:
                 triplet = {};
                 int k = *head + *tail;
                 thirdVal = k * -1;
-                arr[*head + LARGEST].val--;
-                arr[*tail + LARGEST].val--;
-                if (thirdVal >= -100000 && thirdVal <= 100000) {
-                    if (arr[thirdVal + LARGEST].val > 0 && head != tail) {
-                        if (thirdVal <= *head && thirdVal <= *tail &&
-                            *head <= *tail) {
-                            triplet = {thirdVal, *head, *tail};
-                            goto add;
-                        } else if (thirdVal <= *head && thirdVal <= *tail &&
-                                   *tail <= *head) {
-                            triplet = {thirdVal, *tail, *head};
-                            goto add;
-                        } else if ((*head <= thirdVal && *head <= *tail) &&
-                                   thirdVal <= *tail) {
-                            triplet = {*head, thirdVal, *tail};
-                            goto add;
-                        } else if (*head <= thirdVal && *head <= *tail &&
-                                   *tail <= thirdVal) {
-                            triplet = {*head, *tail, thirdVal};
-                            goto add;
-                        } else if (*tail <= thirdVal && *tail <= *head &&
-                                   *head <= thirdVal) {
-                            triplet = {*tail, *head, thirdVal};
-                            goto add;
-                        } else if (*tail <= thirdVal && *tail <= *head &&
-                                   thirdVal <= *head) {
-                            triplet = {*tail, thirdVal, *head};
-                            goto add;
-                        } else
-                            triplet = {500, 500, 500};
-                    add:
+                foundUnique=false;
+                if (thirdVal >= -100000 && thirdVal <= 100000 &&
+                    arr[*tail + LARGEST].val > 0 &&
+                    arr[*head + LARGEST].val > 0) {
+                    arr[*head + LARGEST].val--;
+                    arr[*tail + LARGEST].val--;
+                    if (arr[thirdVal + LARGEST].val > 0 && tail != head) {
+
+                        triplet = {thirdVal, *head, *tail};
                         foundUnique = true;
-                        if (found.size() > 0) {
-                            if (arr[*tail + LARGEST].used ==
-                                arr[*head + LARGEST].used ==
-                                arr[thirdVal + LARGEST].used == true) {
-                                foundUnique = false;
 
-                                break;
-                            }
-                        }
+                        if (triplet != lastFound && arr2[thirdVal + LARGEST].val >= 0 && arr2[*head + LARGEST].val >= 0){
 
-                        if (foundUnique) {
-                            arr[*tail + LARGEST].used = true;
-                            arr[*head + LARGEST].used = true;
-                            arr[thirdVal + LARGEST].used = true;
                             found.push_back(triplet);
+                            arr2[*head + LARGEST].val=-1;
                         }
                     }
+                    arr[*head + LARGEST].val++;
+                    arr[*tail + LARGEST].val++;
                 }
-                arr[*head + LARGEST].val++;
-                arr[*tail + LARGEST].val++;
+                lastHead = head;
+                lastThirdVal = thirdVal;
+                lastFound = triplet;
+                //arr2[*head + LARGEST].val=-1;
                 head = head + 1;
             }
+            arr[*tail + LARGEST].val = 0;
+            arr[*tail + LARGEST].used = true;
+            memset(arr2,0,sizeof(arr2));
+            lastThirdVal = 100001;
+            lastHead = NULL;
             tail -= 1;
-            counter += found.size();
         }
         if (found.size() == 0)
             return found;
